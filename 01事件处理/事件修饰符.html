@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../lib/vue.js"></script>
+
+    <style>
+        .inner {
+            background-color: cyan;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h4>stop修饰符</h4>
+        <!-- stop修饰符阻止事件向上冒泡 -->
+        <!-- 下述案例中，点击按钮后仅执行btnHandler事件，不执行divHandler事件，且事件不继续往外冒泡 -->
+        <div class="inner" @click='divHandler'>
+            <input type="button" value="点我" @click.stop="btnHandler">
+        </div>
+        <hr>
+        <h4>prevent修饰符</h4>
+        <!-- prevent修饰符阻止a链接的默认跳转行为 -->
+        <!-- 下述案例中，点击a链接仅执行linkClick事件，不发生默认跳转行为 -->
+        <a href="https://github.com/Lovuey/lovue" @click.prevent='linkClick'>欢迎关注lovue项目</a>
+        <hr>
+        <h4>capture修饰符</h4>
+        <!-- capture修饰符使用事件捕获机制 -->
+        <!-- 下述案例中，点击按钮后先执行divHandler事件，后执行btnHandler事件 -->
+        <div class="inner" @click.capture='divHandler'>
+            <input type="button" value="点我" @click="btnHandler">
+        </div>
+        <hr>
+        <h4>self修饰符</h4>
+        <!-- self修饰符仅当点击div元素本身时触发事件 -->
+        <!-- 下述案例中，点击按钮不会触发divHandler事件，但点击事情可继续向上冒泡，触发更外层点击事件 -->
+        <div class="inner" @click.self='divHandler'>
+            <input type="button" value="点我" @click="btnHandler">
+        </div>
+        <hr>
+        <h4>once修饰符</h4>
+        <!-- once修饰符仅触发一次事件 -->
+        <!-- 下述案例中，仅阻止一次a链接默认跳转行为，第二次点击时会发生跳转 -->
+        <a href="https://github.com/Lovuey/lovue" @click.prevent.once='linkClick'>欢迎关注lovue项目</a>
+        <hr>
+        <h4>passive修饰符</h4>
+        <!-- passive默认事件立即触发 -->
+        <!-- 下述案例中，div滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
+        <!-- 而不会等待 `onScroll` 完成  -->
+        <div @scroll.passive="onScroll">...</div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {},
+            methods: {
+                divHandler() {
+                    console.log('触发了div的点击事件')
+                },
+                btnHandler() {
+                    console.log('触发了btn的点击事件')
+                },
+                linkClick() {
+                    console.log('触发了a链接的点击事件')
+                },
+                onScroll() {
+                    console.log('触发了div的滚动事件')
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
