@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            /* background-color: #eee; */
+        }
+        
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10rem auto 0 auto;
+            padding: 1rem;
+            max-width: 1024px;
+        }
+        
+        .btn {
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            width: 12rem;
+            color: #fff;
+            background-color: #ff8140;
+            border: none;
+            box-shadow: 2px 2px 5px #888;
+        }
+        
+        .img {
+            width: 50%;
+        }
+        
+        .small {
+            font-size: small;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <a id="faviconPlayVideo" class="btn" href="">动起来！</a>
+        <p class="small">1.注意看favicon 2.注意下面img元素</p>
+        <img src="" alt="" class="img">
+    </main>
+    <script>
+        let video = canvas = null
+        const faviconSize = 1024
+        document.querySelector('#faviconPlayVideo').addEventListener('click', (e) => {
+            e.preventDefault()
+            init()
+        }, false)
+
+        function init() {
+            initCanvas()
+            initVideo()
+        }
+
+        function initVideo() {
+            // 加载视频并添加视频播放事件
+            let hasVideo = document.querySelector('video')
+            if (hasVideo) return
+            video = document.createElement('video')
+            video.width = 0
+            video.src = './src/tmac.mp4'
+            video.crossOrigin = 'anonymous'
+            let main = document.querySelector('main')
+            main.appendChild(video)
+            videoHandler()
+        }
+
+        function videoHandler() {
+            // 添加视频播放事件
+            video.addEventListener('canplay', () => {
+                video.volume = 0.5
+                setTimeout(() => {
+                    video.play()
+                }, 300)
+            })
+            video.addEventListener('play', () => {
+                videoToFavicon()
+            })
+        }
+
+        function videoToFavicon() {
+            // 使用canvas定时获取视频图像，并赋给favicon
+            if (video.ended) return
+
+            const context = canvas.getContext('2d')
+            context.clearRect(0, 0, faviconSize, faviconSize)
+            context.drawImage(video, 0, 0, faviconSize, faviconSize)
+            setFavicon()
+
+            setTimeout(() => {
+                videoToFavicon()
+            }, 50)
+        }
+
+        function setFavicon() {
+            // 将canvas赋给favicon
+            let url = canvas.toDataURL('image/png')
+            let favicon = document.head.querySelector('link[rel="shortcut icon"]')
+            let img = document.querySelector('.img')
+            img.src = url
+            if (favicon) {
+                favicon.href = url
+            } else {
+                let favicon = document.createElement('link')
+                favicon.rel = 'shortcut icon'
+                favicon.href = url
+                document.head.appendChild(favicon)
+            }
+        }
+
+        function initCanvas() {
+            // 创建canvas元素
+            canvas = document.createElement('canvas')
+            canvas.width = canvas.height = faviconSize
+        }
+    </script>
+</body>
+
+</html>
